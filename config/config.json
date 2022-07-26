@@ -1,0 +1,10 @@
+	"wallet_file_base_dir": "C:/CTool/keystore/",
+	"prikey_file_base_dir": "C:/CTool/priatekey/",
+	"validator_file_base_dir": "C:/CTool/validator/",
+	"unsigned_transaction_file_dir": "C:/CTool/unsigned_transaction/",
+	"signed_transaction_file_dir": "C:/CTool/signed_transaction/",
+	"transaction_result_dir": "C:/CTool/transaction_result/",
+    "rpc_url":"http://192.168.120.150:6789",
+	"chain_id": 100,
+	"hrp_type": "lat"
+}
