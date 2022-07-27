@@ -483,7 +483,7 @@ batch_send_raw_transaction -f C:\CTool\signed_transaction\signed_{$contractName}
 >
 > -s: 发完每笔交易的休眠时间，单位毫秒，默认100ms；
 >
-> --no-wait：不等交易回执，直接返回交易hash；`--wait：表示等待交易回执（此方式发送交易较慢）`；
+> --no-wait：不等交易回执，直接返回交易hash；`--wait：表示等待交易回执（此方式发送交易较慢）, 如果部署合约时，结果文件需要保存合约地址，需要使用此参数`；
 >
 > 
 >
@@ -515,123 +515,6 @@ verify_transaction_result -f {$contractName}_{$func_name}_file.xlsx -r C:\CTool\
 检查完成后生成检测文件：`check_{$contractName}_{$func_name}_result_XXXXXXXXXXX.csv`文件，此文件记录合约转账交易校验结果信息；
 
 如果生成`err_{$contractName}_{$func_name}_result_XXXXXXXXXXX.csv`表示有异常交易，需要使用`{$contractName}_{$func_name}_file_XXXXXXXXXXX.xlsx`文件，重发合约交易。
-
-
-
-### 3.5 批量ERC721合约转账交易
-
-- 编辑erc721合约转账交易配置文件
-
-  通过根据具体的需求对`C:\CTool\template\erc721_safeTransferFrom_file.xlsx`文件进行编辑；
-
-  | from | contract_address | param_from | param_to | param_tokenId |
-  | ---- | ---------------- | ---------- | -------- | ------------- |
-  |      |                  |            |          |               |
-
-  > 字段说明：
-  >
-  > - from：发送合约转账交易地址；
-  > - contract_address：erc721合约地址；
-  > - param_from：铸币地址；
-  > - param_to：NFT投票接收钱包；
-  > - param_tokenId：令牌ID;
-
-- 生成erc721合约转账交易待签名文件
-
-  将编辑好的合约转账交易配置文件`C:\CTool\template\erc721_safeTransferFrom_file.xlsx`拷贝到工具所在的在线机器上，执行：
-
-```shell
-batch_unsigned_erc20_tx -f C:\CTool\template\erc721_safeTransferFrom_file.xlsx -a  C:\CTool\bin\contract\erc721.abi -b C:\CTool\bin\contract\erc721.bin -c erc721 -d $contract_address -n safeTransferFrom 
-```
-
-> 参数说明：
->
-> -f：合约交易文件路径；
->
-> -a：erc721合约abi文件的路径；
->
-> -b：erc721合约bin文件的路径；
->
-> -c：erc721合约名称；
->
-> -d：erc721合约地址，不指定时，从合约交易文件中的`contract_address`字段中读取；**指定时请将	    $contract_address修改为真实的合约地址**；
->
-> -n：合约函数名称，不指定时，默认为：`transfer`，即erc721合约转账交易；
->
-> 
->
-> 执行成功后在[1.3 修改config配置](#1.3 修改config配置) 的`unsigned_transaction_file_dir`目录下生成待签名合约交易文件：`unsigned_erc721_safeTransferFrom_transactions.csv`文件。
-
-
-
-- 签名erc721合约交易
-
-```shell
-batch_signed_erc20_tx -f C:\CTool\unsigned_transaction\unsigned_erc721_safeTransferFrom_transactions.csv -k C:\CTool\keystore
-```
-
-> 参数说明：
->
-> -f: erc2.0合约交易待签名文件；
->
-> -k: 转账交易钱包文件所在路径；如果钱包为外部提供，需要将钱包名命名为地址；并在钱包文件当前的密码文件`password.txt`下按格式`$address:$password`添加钱包文件的地址和密码；；
->
-> 执行成功后在[1.3 修改config配置](#1.3 修改config配置) 的`signed_transaction_file_dir`目录下生成合约交易签名文件：`signed_erc721_safeTransferFrom_transactions.csv`文件。
-
-
-
-- 发送erc721合约交易
-
-```shell
-batch_send_raw_transaction -f C:\CTool\signed_transaction\signed_erc721_safeTransferFrom_transactions.csv -t erc20 -n 1 -m 20 --no-wait
-```
-
-> 参数说明：
->
-> -f: 合约交易签名文件；
->
-> -t: 交易类型；包括staking\transfer\restrict\erc20；
->
-> -s: 发完每笔交易的休眠时间，单位毫秒，默认100ms，当指定`-m`大于0时此参数无效；
->
-> -n: 发完每笔交易的最小休眠时间，单位分钟，默认为0；
->
-> -m: 发完每笔交易的最大休眠时间，单位分钟，默认为0；
->
-> --no-wait：不等交易回执，直接返回交易hash；`--wait：表示等待交易回执（此方式发送交易较慢）`；
->
-> 
->
-> 执行成功后在[1.3 修改config配置](#1.3 修改config配置) 的`transaction_result_dir`目录下生成合约交易签名文件：`erc721_safeTransferFrom_transaction_result.csv`文件。
->
-> 
->
-> **检查交易是否上链：**
->
-> - 检查交易是否全部上链，执行：
->
->   ```shell
->   batch_send_raw_transaction -f C:\CTool\signed_transaction\signed_erc721_safeTransferFrom_transactions.csv -t erc20 --check
->   ```
->
->   > - 如果提示：`not all transactions are on the chain, please wait!!!`，表示交易还没有全部上链，请等待，先不要进行**交易检测**的操作（过一会再重复执行一次上述命令）；
->   > - 如果提示：`all transactions are on the chain.`，表示交易全部上链，可以进行进行**交易检测**的操作，进行交易是否成功的检查；
-
-
-
-- 校验合约交易
-
-使用生成的结果文件`erc721_safeTransferFrom_transaction_result.csv`校验交易是否成功：
-
-```shell
-verify_transaction_result -f C:\CTool\template\erc721_safeTransferFrom_file.xlsx -r C:\CTool\transaction_result\erc721_safeTransferFrom_transaction_result.csv -t erc20
-```
-
-检查完成后生成检测文件：`check_erc721_safeTransferFrom_result_XXXXXXXXXXX.csv`文件，此文件记录erc721合约转账交易校验结果信息；
-
-如果生成`err_erc721_safeTransferFrom_result_XXXXXXXXXXX.csv`表示有异常交易，需要使用`erc721_safeTransferFrom_file_XXXXXXXXXXX.xlsx`文件，重发erc721合约交易。
-
-
 
 ### 3.6 批量NFT交易
 
@@ -693,7 +576,7 @@ batch_send_raw_transaction -f C:\CTool\signed_transaction\signed_ERC721_deploy_t
 >
 > -s: 发完每笔交易的休眠时间，单位毫秒，默认100ms，当指定`-m`大于0时此参数无效；
 >
-> --no-wait：不等交易回执，直接返回交易hash；`--wait：表示等待交易回执（此方式发送交易较慢）`；
+> --no-wait：不等交易回执，直接返回交易hash；`--wait：表示等待交易回执（此方式发送交易较慢），如果部署合约时，结果文件需要保存合约地址，需要使用此参数`；
 >
 > 
 >
@@ -821,5 +704,114 @@ verify_transaction_result -f C:\CTool\template\erc721_mint_file.xlsx -r C:\CTool
 
 #### 3.6.3 批量NFT转账
 
-参考**3.5 批量ERC721合约转账交易**章节。
+- 编辑erc721合约转账交易配置文件
+
+  通过根据具体的需求对`C:\CTool\template\erc721_safeTransferFrom_file.xlsx`文件进行编辑；
+
+  | from | contract_address | param_from | param_to | param_tokenId |
+  | ---- | ---------------- | ---------- | -------- | ------------- |
+  |      |                  |            |          |               |
+
+  > 字段说明：
+  >
+  > - from：发送合约转账交易地址；即为铸币地址`$param_from`；
+  > - contract_address：erc721合约地址；
+  > - param_from：铸币地址；
+  > - param_to：NFT投票接收钱包；
+  > - param_tokenId：令牌ID;
+
+- 生成erc721合约转账交易待签名文件
+
+  将编辑好的合约转账交易配置文件`C:\CTool\template\erc721_safeTransferFrom_file.xlsx`拷贝到工具所在的在线机器上，执行：
+
+```shell
+batch_unsigned_erc20_tx -f C:\CTool\template\erc721_safeTransferFrom_file.xlsx -a  C:\CTool\bin\contract\erc721.abi -b C:\CTool\bin\contract\erc721.bin -c erc721 -d $contract_address -n safeTransferFrom 
+```
+
+> 参数说明：
+>
+> -f：合约交易文件路径；
+>
+> -a：erc721合约abi文件的路径；
+>
+> -b：erc721合约bin文件的路径；
+>
+> -c：erc721合约名称；
+>
+> -d：erc721合约地址，不指定时，从合约交易文件中的`contract_address`字段中读取；**指定时请将	    $contract_address修改为真实的合约地址**；
+>
+> -n：合约函数名称，不指定时，默认为：`transfer`，即erc721合约转账交易；
+>
+> 
+>
+> 执行成功后在[1.3 修改config配置](#1.3 修改config配置) 的`unsigned_transaction_file_dir`目录下生成待签名合约交易文件：`unsigned_erc721_safeTransferFrom_transactions.csv`文件。
+
+
+
+- 签名erc721合约交易
+
+```shell
+batch_signed_erc20_tx -f C:\CTool\unsigned_transaction\unsigned_erc721_safeTransferFrom_transactions.csv -k C:\CTool\keystore
+```
+
+> 参数说明：
+>
+> -f: erc2.0合约交易待签名文件；
+>
+> -k: 转账交易钱包文件所在路径；如果钱包为外部提供，需要将钱包名命名为地址；并在钱包文件当前的密码文件`password.txt`下按格式`$address:$password`添加钱包文件的地址和密码；；
+>
+> 执行成功后在[1.3 修改config配置](#1.3 修改config配置) 的`signed_transaction_file_dir`目录下生成合约交易签名文件：`signed_erc721_safeTransferFrom_transactions.csv`文件。
+
+
+
+- 发送erc721合约交易
+
+```shell
+batch_send_raw_transaction -f C:\CTool\signed_transaction\signed_erc721_safeTransferFrom_transactions.csv -t erc20 -n 1 -m 20 --no-wait
+```
+
+> 参数说明：
+>
+> -f: 合约交易签名文件；
+>
+> -t: 交易类型；包括staking\transfer\restrict\erc20；
+>
+> -s: 发完每笔交易的休眠时间，单位毫秒，默认100ms，当指定`-m`大于0时此参数无效；
+>
+> -n: 发完每笔交易的最小休眠时间，单位分钟，默认为0；
+>
+> -m: 发完每笔交易的最大休眠时间，单位分钟，默认为0；
+>
+> --no-wait：不等交易回执，直接返回交易hash；`--wait：表示等待交易回执（此方式发送交易较慢）`；
+>
+> 
+>
+> 执行成功后在[1.3 修改config配置](#1.3 修改config配置) 的`transaction_result_dir`目录下生成合约交易签名文件：`erc721_safeTransferFrom_transaction_result.csv`文件。
+>
+> 
+>
+> **检查交易是否上链：**
+>
+> - 检查交易是否全部上链，执行：
+>
+>   ```shell
+>   batch_send_raw_transaction -f C:\CTool\signed_transaction\signed_erc721_safeTransferFrom_transactions.csv -t erc20 --check
+>   ```
+>
+>   > - 如果提示：`not all transactions are on the chain, please wait!!!`，表示交易还没有全部上链，请等待，先不要进行**交易检测**的操作（过一会再重复执行一次上述命令）；
+>   > - 如果提示：`all transactions are on the chain.`，表示交易全部上链，可以进行进行**交易检测**的操作，进行交易是否成功的检查；
+
+
+
+- 校验合约交易
+
+使用生成的结果文件`erc721_safeTransferFrom_transaction_result.csv`校验交易是否成功：
+
+```shell
+verify_transaction_result -f C:\CTool\template\erc721_safeTransferFrom_file.xlsx -r C:\CTool\transaction_result\erc721_safeTransferFrom_transaction_result.csv -t erc20
+```
+
+检查完成后生成检测文件：`check_erc721_safeTransferFrom_result_XXXXXXXXXXX.csv`文件，此文件记录erc721合约转账交易校验结果信息；
+
+如果生成`err_erc721_safeTransferFrom_result_XXXXXXXXXXX.csv`表示有异常交易，需要使用`erc721_safeTransferFrom_file_XXXXXXXXXXX.xlsx`文件，重发erc721合约交易。
 
