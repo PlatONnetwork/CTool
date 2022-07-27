@@ -46,7 +46,7 @@ CTool是PlatON网络钱包交易及合约交易的综合工具，方便使用者
 	"unsigned_transaction_file_dir": "C:\CTool\unsigned_transaction\",
 	"signed_transaction_file_dir": "C:\CTool\signed_transaction\",
 	"transaction_result_dir": "C:\CTool\transaction_result\",
-    "rpc_url":"http:\\127.0.0.1:6789",
+    "rpc_url":"http://127.0.0.1:6789",
 	"chain_id": 100,
 	"hrp_type": "lat"
 }
@@ -441,9 +441,9 @@ batch_unsigned_erc20_tx -f {$contractName}_{$func_name}_file.xlsx -a $abi_path -
 >
 > -c：合约名称；
 >
-> -d：erc2.0合约地址，不指定时，从合约j交易文件中的`contract_address`字段中读取；**指定时请将	    $contract_address修改为真实的合约地址**；
+> -d：erc2.0合约地址，不指定时，从合约交易文件中的`contract_address`字段中读取；**指定时请将	    $contract_address修改为真实的合约地址**；如果是部署合约则不用指定；
 >
-> -n：合约函数名称，不指定时，默认为：`transfer`，即合约转账交易；
+> -n：合约函数名称，不指定时，默认为：`transfer`，即合约转账交易；如果是部署合约，则需指定为：**constructor**；
 >
 > 
 >
@@ -554,7 +554,7 @@ batch_unsigned_erc20_tx -f C:\CTool\template\erc721_safeTransferFrom_file.xlsx -
 >
 > -c：erc721合约名称；
 >
-> -d：erc721合约地址，不指定时，从合约j交易文件中的`contract_address`字段中读取；**指定时请将	    $contract_address修改为真实的合约地址**；
+> -d：erc721合约地址，不指定时，从合约交易文件中的`contract_address`字段中读取；**指定时请将	    $contract_address修改为真实的合约地址**；
 >
 > -n：合约函数名称，不指定时，默认为：`transfer`，即erc721合约转账交易；
 >
