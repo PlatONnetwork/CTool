@@ -408,8 +408,6 @@ def verify_transaction_result(filePath, resFilePath, tx_type, check_by_hash):
 
             if 'erc20' == tx_type:
                 funcName = tx_res_list[0]["funcName"]
-                if "constructor" == funcName:
-                    funcName = "deploy"
             for tx_res in tx_res_list:
                 try:
                     # 交易hash

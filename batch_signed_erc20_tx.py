@@ -120,8 +120,6 @@ def batch_signed_erc20_tx(filePath, keystore, convert_hrp):
             print("完成第: %d 笔交易签名=================" % i)
 
         # 生成 csv 文件
-        if "constructor" == funcName:
-            funcName = "deploy"
         signed_file_csv_name = "signed_{}_{}_transactions.csv".format(contractName, funcName)
         signed_file_path = os.path.join(signed_transaction_file_dir, signed_file_csv_name)
         write_csv(signed_file_path, sign_transaction_list)
