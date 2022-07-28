@@ -158,8 +158,6 @@ def batch_unsigned_erc20_tx(filePath, abi_path, bin_path, contractName,
             print("完成第: %d 笔待签名交易=================" % i)
 
         # 部署合约
-        if "constructor" == func_name:
-            func_name = "deploy"
         unsigned_file_csv_name = "unsigned_{}_{}_transactions.csv".format(contractName, func_name)
         unsigned_file_path = os.path.join(unsigned_transaction_file_dir, unsigned_file_csv_name)
         write_csv(unsigned_file_path, all_transaction)

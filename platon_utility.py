@@ -112,7 +112,7 @@ def get_abi_func_inputs_by_name(abi_info, func_name):
 
 def unsigned_soldity_transaction(from_address, to_address, data, nonce,
                                  gas_price=1000000000, amount='0',
-                                 contractName="deploy", funcName="", func_params="") -> dict:
+                                 contractName="", funcName="", func_params="") -> dict:
     """
     组装未签名交易格式字典数据
     :return:

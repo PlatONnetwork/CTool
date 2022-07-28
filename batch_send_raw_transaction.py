@@ -137,8 +137,6 @@ def batch_send_raw_transaction(filePath, tx_type, sleepTime, check, wait, minTim
                 if 'erc20' == tx_type:
                     funcName = one_transaction["funcName"]
                     contractName = transaction_info["contractName"]
-                    if "constructor" == funcName:
-                        funcName = "deploy"
                     msg = "{}, contractName:{}, function_name: {}".format(msg, contractName, funcName)
                     if one_transaction["to"] is None or one_transaction["to"] == "":
                         transaction_info["contract_address"] = address
@@ -160,8 +158,6 @@ def batch_send_raw_transaction(filePath, tx_type, sleepTime, check, wait, minTim
                 if 'erc20' == tx_type:
                     funcName = one_transaction["funcName"]
                     contractName = transaction_info["contractName"]
-                    if "constructor" == funcName:
-                        funcName = "deploy"
                     msg = "{}, contractName:{}, function_name: {}".format(msg, contractName, funcName)
                     if one_transaction["to"] is None or one_transaction["to"] == "":
                         transaction_info["contract_address"] = ""
